@@ -16,6 +16,7 @@ URL_regex = r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,
 @dp.message_handler(filters.Regexp(URL_regex))
 async def save_video(msg: types.Message):
     links = msg.text
+    message = await msg.answer("🔍")
 #tik-tok
     try:
         if links[7:22] == '/www.tiktok.com':
@@ -45,14 +46,20 @@ async def save_video(msg: types.Message):
                 await msg.answer_video(video=link, reply_markup=video_keyboards(link))
             except:
                 await msg.reply(f"{msg.from_user.full_name} yuklash uchun 📥 bosing", reply_markup=video_keyboards(link))
+        await message.delete()
+        await msg.delete()
     except:
+        await message.delete()
         m = await msg.reply("siz xato link yubordinggiz")
+        await asyncio.sleep(5)
+        await m.delete()
+        await msg.delete()
 
 
 
 @dp.callback_query_handler(text="delete")
 async def back_button(call: CallbackQuery):
-    await call.message.reply_to_message.delete()
+    await call.message.delete()
     await call.answer()
 
 
